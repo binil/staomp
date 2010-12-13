@@ -7,7 +7,7 @@ object LockTest {
   
   def main(args: Array[String]) {
     val random = new Random
-    val lock = new MCSLock
+    val lock = new TOLock
   
     class TestThread(val id: Int) extends Thread {
       setName("Thread(" + id + ")")
