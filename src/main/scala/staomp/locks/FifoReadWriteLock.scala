@@ -2,9 +2,9 @@ package staomp.locks
 
 import java.util.concurrent.locks.ReentrantLock
 
-class SimpleReadWriteLock extends ReadWriteLock {
-  private var readers = 0
+class FifoReadWriteLock extends ReadWriteLock {
   private var writer = false
+  private var (readAcquires, readReleases) = (0, 0)
   
   private val lck = new ReentrantLock
   private val condition = lck.newCondition
@@ -16,7 +16,7 @@ class SimpleReadWriteLock extends ReadWriteLock {
         while (writer) {
           condition.await
         }
-        readers += 1
+        readAcquires += 1
       } finally {
         lck.unlock
       }
@@ -25,8 +25,8 @@ class SimpleReadWriteLock extends ReadWriteLock {
     override def unlock {
       lck.lock
       try {
-        readers -= 1
-        if (readers == 0) {
+        readReleases += 1
+        if (readAcquires == readReleases) {
           condition.signalAll
         }
       } finally {
@@ -34,29 +34,26 @@ class SimpleReadWriteLock extends ReadWriteLock {
       }
     }
   }
-
+  
   val writeLock = new Lock {
     override def lock {
       lck.lock
       try {
-        while (writer || readers > 0) {
+        while (writer) {
           condition.await
         }
         writer = true
+        while (readAcquires != readReleases) {
+          condition.await
+        }
       } finally {
         lck.unlock
       }
     }
     
     override def unlock {
-      lck.lock
-      try {
-        writer = false
-        condition.signalAll
-      } finally {
-        lck.unlock
-      }
+      writer = false
+      condition.signalAll
     }
   }
 }
-
