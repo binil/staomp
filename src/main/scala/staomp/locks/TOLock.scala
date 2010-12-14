@@ -11,12 +11,11 @@ class TOLock extends Lock {
   
   def lock() {
     val success = tryLock(Long.MaxValue, TimeUnit.MILLISECONDS)
-    if (!success) throw new IllegalStateException()
+    if (!success) throw new IllegalStateException
   }
     
   def tryLock(time: Long, unit: TimeUnit): Boolean = {
-    val startTime = System.currentTimeMillis
-    val patience = TimeUnit.MILLISECONDS.convert(time, unit)
+    val startTime = now
     
     val qnode = new QNode
     myNode.set(qnode)
@@ -26,8 +25,10 @@ class TOLock extends Lock {
       return true
     }
     
-    while (System.currentTimeMillis - startTime < patience) {
+    val patience = TimeUnit.MILLISECONDS.convert(time, unit)
+    while (now - startTime < patience) {
       val predPred = myPred.pred
+      
       if (predPred == Available) {   // the previous thread just released the lock
         return true
       } else if (predPred != null) { // the previous thread abandoned the lock
@@ -56,6 +57,8 @@ class TOLock extends Lock {
       qnode.pred = Available
     }
   }
+  
+  private def now: Long = System.currentTimeMillis
 }
 
 object TOLock {
