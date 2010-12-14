@@ -39,7 +39,7 @@ class SimpleReadWriteLock {
     override def lock {
       lck.lock
       try {
-        while (readers > 0) {
+        while (writer || readers > 0) {
           condition.await
         }
         writer = true
