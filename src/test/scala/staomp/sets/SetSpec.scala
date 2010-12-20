@@ -1,11 +1,25 @@
 package staomp.sets
 
 import org.scalatest.WordSpec
-import staomp.sets.{FineLockSet => SetImpl}
-class SetSpec extends WordSpec {
+
+class CoarseSetSpec extends SetSpec {
+  def createSet = new CoarseLockSet[String]
+}
+
+class FineLockSetSpec extends SetSpec {
+  def createSet = new FineLockSet[String]
+}
+
+class OptimisticLockSetSpec extends SetSpec {
+  def createSet = new OptimisticLockSet[String]
+}
+
+abstract class SetSpec extends WordSpec {
+  def createSet:Set[String]
+
   "A set" should {
     "remember added elements" in {
-      val set = new SetImpl[String]
+      val set = createSet
       assert(set add "X")
       assert(set add "Y")
 
@@ -15,7 +29,7 @@ class SetSpec extends WordSpec {
     }
 
     "not include duplicates" in {
-      val set = new SetImpl[String]
+      val set = createSet
       assert(set add "X")
       assert(set add "Y")
       assert(! (set add "X"))
@@ -23,7 +37,7 @@ class SetSpec extends WordSpec {
     }
 
     "forget removed elements" in {
-      val set = new SetImpl[String]
+      val set = createSet
       assert(set add "X")
       assert(set add "Y")
 

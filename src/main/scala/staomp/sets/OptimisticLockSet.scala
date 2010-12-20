@@ -12,8 +12,8 @@ class OptimisticLockSet[T] extends Set[T] {
     def unlock { lck.unlock }
 
     def ->(n: Node): Node = {
-      n.next = this
-      this
+      next = n
+      n
     }
   }
 
@@ -87,7 +87,7 @@ class OptimisticLockSet[T] extends Set[T] {
 
   private def findKey(key: Int):(Node, Node) = {
     var (pred, curr) = (head, head.next)
-    while (curr.key <= key) {
+    while (curr.key < key) {
       pred = curr
       curr = curr.next
     }
