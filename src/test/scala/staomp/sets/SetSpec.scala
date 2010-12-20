@@ -21,7 +21,7 @@ class LazyLockSetSpec extends SetSpec {
 abstract class SetSpec extends WordSpec {
   def createSet:Set[String]
 
-  "A set" should {
+  "A "+name should {
     "remember added elements" in {
       val set = createSet
       assert(set add "X")
@@ -53,4 +53,6 @@ abstract class SetSpec extends WordSpec {
       assert(! (set remove "Z"))
     }
   }
+
+  def name: String = createSet.getClass.getSimpleName
 }
