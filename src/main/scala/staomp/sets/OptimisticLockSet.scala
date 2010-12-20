@@ -2,7 +2,7 @@ package staomp.sets
 
 import java.util.concurrent.locks.ReentrantLock
 
-class OptimisticSet[T] extends Set[T] {
+class OptimisticLockSet[T] extends Set[T] {
   private class Node(val item: T, val key: Int) {
     private val lck = new ReentrantLock
     var next: Node = null

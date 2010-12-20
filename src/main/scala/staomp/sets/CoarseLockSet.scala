@@ -3,7 +3,7 @@ package staomp.sets
 import java.util.concurrent.locks.ReentrantLock
 import staomp.RichLock.lock2RichLock
 
-class CoarseSet[T] extends Set[T] {
+class CoarseLockSet[T] extends Set[T] {
   private class Node(val item: T, val key: Int) {
     def this(item: T) = this(item, item.hashCode)
     var next: Node = null
