@@ -6,3 +6,7 @@ lib_managed/
 src_managed/
 project/boot/
 
+.idea/
+project/project.iml
+staomp.iml
+
