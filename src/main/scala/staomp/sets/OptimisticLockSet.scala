@@ -71,7 +71,7 @@ class OptimisticLockSet[T] extends Set[T] {
       try {
         if (validate(pred, curr)) {
           if (curr.key == key) {
-            pred.next = curr.next
+            pred -> curr.next
             return true
           } else {
             return false

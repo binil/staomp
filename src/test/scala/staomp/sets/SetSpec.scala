@@ -14,6 +14,10 @@ class OptimisticLockSetSpec extends SetSpec {
   def createSet = new OptimisticLockSet[String]
 }
 
+class LazyLockSetSpec extends SetSpec {
+  def createSet = new LazyLockSet[String]
+}
+
 abstract class SetSpec extends WordSpec {
   def createSet:Set[String]
 
