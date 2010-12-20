@@ -6,7 +6,7 @@ class LazyLockSet[T] extends Set[T] {
   private class Node(val item: T, val key: Int) {
     def this(item: T) = this(item, item.hashCode)
     var next: Node = null
-    var marked: Boolean = false
+    var removed: Boolean = false
 
     private val lck = new ReentrantLock
     def lock { lck.lock }
@@ -22,7 +22,7 @@ class LazyLockSet[T] extends Set[T] {
     val key = elem.hashCode
     var curr = head
     while (curr.key < key) curr = curr.next
-    curr.key == key && !curr.marked
+    curr.key == key && !curr.removed
   }
 
   def remove(elem: T): Boolean = {
@@ -35,7 +35,7 @@ class LazyLockSet[T] extends Set[T] {
         try {
           if (validate(pred, curr)) {
             if (curr.key == key) {
-              curr.marked = true
+              curr.removed = true
               pred -> curr.next
               return true
             } else {
@@ -78,7 +78,7 @@ class LazyLockSet[T] extends Set[T] {
     throw new IllegalStateException
   }
 
-  private def validate(pred: Node, curr: Node): Boolean = !pred.marked && !curr.marked && pred.next == curr
+  private def validate(pred: Node, curr: Node): Boolean = !pred.removed && !curr.removed && pred.next == curr
 
   private def findKey(key: Int):(Node, Node) = {
     var (pred, curr) = (head, head.next)
