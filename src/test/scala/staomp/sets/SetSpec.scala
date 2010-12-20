@@ -2,7 +2,7 @@ package staomp.sets
 
 import org.scalatest.WordSpec
 
-class CoarseSetSpec extends SetSpec {
+class CoarseLockSetSpec extends SetSpec {
   def createSet = new CoarseLockSet[String]
 }
 
