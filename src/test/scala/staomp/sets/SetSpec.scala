@@ -18,18 +18,30 @@ class LazyLockSetSpec extends SetSpec {
   def createSet = new LazyLockSet[String]
 }
 
+class LockFreeSetSpec extends SetSpec {
+  def createSet = new LockFreeSet[String]
+}
+
 abstract class SetSpec extends WordSpec {
   def createSet:Set[String]
 
   "A "+name should {
     "remember added elements" in {
       val set = createSet
-      assert(set add "X")
-      assert(set add "Y")
 
-      assert(set contains "X")
-      assert(set contains "Y")
-      assert(! (set contains "Z"))
+      assert(! (set contains "A"))
+      assert(set add "A")
+      assert(set contains "A")
+
+      assert(set add "B")
+      assert(set add "C")
+      assert(set add "D")
+
+      assert(set contains "A")
+      assert(set contains "B")
+      assert(set contains "C")
+      assert(set contains "D")
+      assert(! (set contains "X"))
     }
 
     "not include duplicates" in {
